@@ -1,0 +1,1732 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Sanjana Banakar: full-stack and Android developer. Builder of LearnersKart, Namma-Platform and computer-vision projects.">
+    <meta name="theme-color" content="#0b2a55">
+    <meta property="og:title" content="Sanjana Banakar | Full-stack and Android Developer">
+    <meta property="og:description"
+        content="Web platforms, Android apps and computer-vision tools. See LearnersKart, Namma-Platform and more.">
+    <meta property="og:type" content="website">
+    <title>Sanjana Banakar | Full-stack &amp; Android Developer</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Public+Sans:wght@400;500;600&display=swap"
+        rel="stylesheet">
+
+    <!-- Search engines read this to understand who the page is about -->
+    <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Sanjana Banakar",
+    "jobTitle": "Full-stack and Android Developer",
+    "email": "mailto:sanjubanakarmlr45@gmail.com",
+    "address": { "@type": "PostalAddress", "addressLocality": "Bengaluru", "addressCountry": "IN" },
+    "alumniOf": "Sri Taralabalu Jagadguru Institute of Technology, Ranebennur",
+    "sameAs": [
+      "https://www.linkedin.com/in/sanjana-s-b-67a05b320",
+      "https://github.com/sanjanasb04"
+    ]
+  }
+  </script>
+
+    <style>
+        /* =====================================================
+       DESIGN TOKENS
+       Concept: Indian railway station signage, echoing the
+       Namma-Platform project. All colours live in these
+       variables, so changing the palette means editing one block.
+       ===================================================== */
+        @property --angle {
+            syntax: "<angle>";
+            initial-value: 0deg;
+            inherits: false;
+        }
+
+        :root {
+            /* Colour palette: blue and yellow */
+            --paper: #eef1f4;
+            --white: #ffffff;
+            --ink: #0f1a2b;
+            --muted: #46526a;
+            --line: #c9d1db;
+            --frame: #0f1a2b;
+            --board: #0b2a55;
+            --board-2: #12396f;
+            --on-board: #ffffff;
+            --on-board-soft: #b8c6dd;
+            --signal: #f5b800;
+            --signal-hover: #ffc919;
+            --signal-ink: #3a2c00;
+            --accent-text: #12396f;
+            --nav-bg: rgba(238, 241, 244, 0.92);
+            --live: #5fe08a;
+
+            --display: "Barlow Condensed", "Arial Narrow", Arial, sans-serif;
+            --body: "Public Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            --wrap: 1120px;
+
+            color-scheme: light;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 84px;
+            scrollbar-color: var(--board-2) var(--paper);
+        }
+
+        body {
+            background: var(--paper);
+            color: var(--ink);
+            font-family: var(--body);
+            font-size: 17px;
+            line-height: 1.65;
+            -webkit-font-smoothing: antialiased;
+            transition: background .35s, color .35s;
+        }
+
+        a {
+            color: inherit;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        ::selection {
+            background: var(--signal);
+            color: var(--signal-ink);
+        }
+
+        :focus-visible {
+            outline: 3px solid var(--signal);
+            outline-offset: 3px;
+        }
+
+        .wrap {
+            width: min(var(--wrap), 100% - 48px);
+            margin-inline: auto;
+        }
+
+        .vh {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+            clip: rect(0 0 0 0);
+            white-space: nowrap;
+            opacity: 0;
+        }
+
+        .skip {
+            position: absolute;
+            left: -999px;
+            top: 8px;
+            background: var(--signal);
+            color: var(--signal-ink);
+            padding: 10px 16px;
+            z-index: 400;
+            font-weight: 600;
+        }
+
+        .skip:focus {
+            left: 8px;
+        }
+
+        h1,
+        h2,
+        h3 {
+            font-family: var(--display);
+            font-weight: 700;
+            line-height: 1.05;
+            letter-spacing: 0.005em;
+            text-wrap: balance;
+        }
+
+        /* =====================================================
+       SCROLL PROGRESS: a little train runs along the top
+       ===================================================== */
+        .progress {
+            display: none;
+        }
+
+        @supports (animation-timeline: scroll()) {
+            .progress {
+                display: block;
+                position: fixed;
+                inset: 0 0 auto 0;
+                height: 4px;
+                z-index: 300;
+                pointer-events: none;
+            }
+
+            .progress-fill {
+                position: relative;
+                height: 100%;
+                width: 0;
+                background: var(--signal);
+                animation: fillTrack linear both;
+                animation-timeline: scroll(root);
+            }
+
+            .progress-fill::after {
+                content: "";
+                position: absolute;
+                right: -8px;
+                top: -3px;
+                width: 18px;
+                height: 10px;
+                border-radius: 3px;
+                background: var(--signal);
+                border: 2px solid var(--ink);
+            }
+        }
+
+        @keyframes fillTrack {
+            to {
+                width: 100%;
+            }
+        }
+
+        /* =====================================================
+       NAVIGATION (mobile menu is CSS only)
+       ===================================================== */
+        .nav {
+            position: sticky;
+            top: 0;
+            z-index: 200;
+            background: var(--nav-bg);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--line);
+        }
+
+        .nav .wrap {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            min-height: 68px;
+            position: relative;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            font-family: var(--display);
+            font-weight: 700;
+            font-size: 22px;
+        }
+
+        .brand-mark {
+            width: 38px;
+            height: 38px;
+            display: grid;
+            place-items: center;
+            background: var(--board);
+            color: var(--signal);
+            font-size: 20px;
+            border-radius: 4px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 28px;
+            margin-left: auto;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 15px;
+            color: var(--muted);
+            padding: 6px 0;
+            border-bottom: 2px solid transparent;
+            background: linear-gradient(var(--signal), var(--signal)) left bottom / 0 2px no-repeat;
+            background-origin: border-box;
+            transition: color .2s, background-size .3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--ink);
+            background-size: 100% 2px;
+        }
+
+        .nav-tools {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        @media (min-width: 801px) {
+            .nav-tools {
+                display: none;
+            }
+        }
+
+        .burger {
+            display: none;
+            cursor: pointer;
+            padding: 8px 14px;
+            border: 1.5px solid var(--ink);
+            font-weight: 600;
+            font-size: 14px;
+            border-radius: 4px;
+        }
+
+        #menu-toggle {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .nav:has(#menu-toggle:focus-visible) .burger {
+            outline: 3px solid var(--signal);
+            outline-offset: 3px;
+        }
+
+        /* =====================================================
+       BUTTONS
+       ===================================================== */
+        .btn {
+            display: inline-block;
+            text-decoration: none;
+            padding: 13px 24px;
+            font-weight: 600;
+            font-size: 15px;
+            border: 2px solid var(--ink);
+            border-radius: 4px;
+            transition: transform .2s, background .2s, color .2s;
+        }
+
+        .btn-primary {
+            background: var(--signal);
+            border-color: var(--signal);
+            color: var(--signal-ink);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            background: var(--signal-hover);
+            border-color: var(--signal-hover);
+        }
+
+        .btn-ghost:hover {
+            background: var(--ink);
+            color: var(--paper);
+        }
+
+        /* =====================================================
+       HERO
+       ===================================================== */
+        .hero {
+            padding: 72px 0 88px;
+        }
+
+        .hero .wrap {
+            display: grid;
+            grid-template-columns: 1fr 1.05fr;
+            gap: 56px;
+            align-items: center;
+        }
+
+        .hero h1 {
+            font-size: clamp(52px, 8vw, 96px);
+            margin-bottom: 20px;
+        }
+
+        .hero .role {
+            font-family: var(--display);
+            font-size: 26px;
+            font-weight: 600;
+            color: var(--accent-text);
+            margin-bottom: 18px;
+        }
+
+        .hero p.lead {
+            max-width: 48ch;
+            color: var(--muted);
+            margin-bottom: 30px;
+        }
+
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+        }
+
+        /* Departure board with a rotating signal-light edge */
+        .board-frame {
+            padding: 4px;
+            border-radius: 10px;
+            background: conic-gradient(from var(--angle), var(--signal), var(--board-2) 28%, var(--board-2) 72%, var(--signal));
+            animation: spin 9s linear infinite;
+            box-shadow: 0 28px 44px -22px rgba(0, 0, 0, .5);
+        }
+
+        @keyframes spin {
+            to {
+                --angle: 360deg;
+            }
+        }
+
+        .dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: var(--live);
+            flex: none;
+        }
+
+        .dot.live {
+            animation: pulse 1.6s ease-in-out infinite;
+        }
+
+        .dot.done {
+            background: var(--signal);
+        }
+
+        @keyframes pulse {
+            50% {
+                opacity: .25;
+            }
+        }
+
+        /* =====================================================
+       SECTIONS
+       ===================================================== */
+        section {
+            padding: 88px 0;
+        }
+
+        .alt {
+            background: var(--white);
+        }
+
+        .section-title {
+            font-size: clamp(38px, 5vw, 56px);
+            padding-left: 18px;
+            border-left: 8px solid var(--signal);
+            margin-bottom: 44px;
+        }
+
+        /* Scroll-driven reveal for blocks that have no hover movement */
+        @supports (animation-timeline: view()) {
+            .reveal {
+                animation: revealUp linear both;
+                animation-timeline: view();
+                animation-range: entry 4% cover 26%;
+            }
+        }
+
+        @keyframes revealUp {
+            from {
+                opacity: 0;
+                translate: 0 36px;
+            }
+
+            to {
+                opacity: 1;
+                translate: 0 0;
+            }
+        }
+
+        /* About */
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1.3fr 1fr;
+            gap: 64px;
+            align-items: stretch;
+        }
+
+        .about-grid p:last-child {
+            margin-bottom: 0;
+        }
+
+        .about-grid p {
+            margin-bottom: 18px;
+            color: var(--muted);
+            max-width: 62ch;
+        }
+
+        .about-grid p strong {
+            color: var(--ink);
+            font-weight: 600;
+        }
+
+        .hero-photo {
+            width: min(100%, 420px);
+            justify-self: center;
+        }
+
+        .hero-photo .portrait {
+            max-width: none;
+            border: 0;
+            box-shadow: none;
+            border-radius: 6px;
+        }
+
+        /* Portrait: shows the board colour and an initial until a photo is added */
+        .portrait {
+            position: relative;
+            width: 100%;
+            max-width: 360px;
+            aspect-ratio: 4 / 5;
+            background: var(--board);
+            border: 2px solid var(--frame);
+            border-radius: 6px;
+            box-shadow: 12px 12px 0 var(--signal);
+            overflow: hidden;
+        }
+
+        .portrait::before {
+            content: "S";
+            position: absolute;
+            inset: 0;
+            display: grid;
+            place-items: center;
+            font-family: var(--display);
+            font-weight: 700;
+            font-size: 160px;
+            color: var(--signal);
+        }
+
+        .portrait .photo {
+            position: absolute;
+            inset: 0;
+            background-size: cover;
+            background-position: center top;
+            background-repeat: no-repeat;
+        }
+
+        .facts {
+            display: flex;
+            flex-direction: column;
+            border: 2px solid var(--frame);
+            border-radius: 6px;
+            background: var(--paper);
+        }
+
+        .facts li {
+            flex: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 18px;
+            padding: 15px 22px;
+            border-bottom: 1px solid var(--line);
+            font-size: 16px;
+        }
+
+        .facts li:last-child {
+            border-bottom: 0;
+        }
+
+        .facts span:first-child {
+            color: var(--muted);
+        }
+
+        .facts span:last-child {
+            font-weight: 600;
+            text-align: right;
+        }
+
+        /* Skills */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .skill-group {
+            background: var(--white);
+            border: 1px solid var(--line);
+            border-top: 6px solid var(--board-2);
+            border-radius: 4px;
+            padding: 24px;
+            transition: border-color .2s, transform .2s;
+        }
+
+        .skill-group:hover {
+            border-top-color: var(--signal);
+            transform: translateY(-3px);
+        }
+
+        .skill-group h3 {
+            font-size: 26px;
+            margin-bottom: 14px;
+        }
+
+        .chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .chips li {
+            background: var(--paper);
+            border: 1px solid var(--line);
+            padding: 4px 12px;
+            border-radius: 999px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* Departure board: project overview at the top of Projects */
+        .board {
+            background: var(--board);
+            color: var(--on-board);
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 40px;
+            box-shadow: 0 0 0 4px var(--frame);
+        }
+
+        .board-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 22px;
+            background: var(--signal);
+            color: var(--signal-ink);
+            font-family: var(--display);
+            font-weight: 700;
+            font-size: 22px;
+        }
+
+        .board-head small {
+            font-family: var(--body);
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .board-cols,
+        .board-row {
+            display: grid;
+            grid-template-columns: 64px 1.6fr 1.2fr 110px;
+            gap: 12px;
+            padding: 14px 22px;
+            align-items: center;
+        }
+
+        .board-cols {
+            font-size: 13px;
+            color: var(--on-board-soft);
+            border-bottom: 1px solid var(--board-2);
+        }
+
+        .board-row {
+            border-bottom: 1px solid var(--board-2);
+            font-family: var(--display);
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .board-row .plat {
+            color: var(--signal);
+        }
+
+        .board-row .stack {
+            font-family: var(--body);
+            font-size: 14px;
+            font-weight: 400;
+            color: var(--on-board-soft);
+        }
+
+        .board-row .state {
+            font-family: var(--body);
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .board-foot {
+            padding: 14px 22px;
+            font-size: 13px;
+            color: var(--on-board-soft);
+        }
+
+        /* Projects: CSS-only filter */
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: -12px 0 32px;
+        }
+
+        .pill {
+            cursor: pointer;
+            padding: 8px 18px;
+            border: 1.5px solid var(--frame);
+            border-radius: 999px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: background .2s, color .2s;
+        }
+
+        .pill:hover {
+            background: var(--line);
+        }
+
+        #projects:has(#f-all:checked) label[for="f-all"],
+        #projects:has(#f-web:checked) label[for="f-web"],
+        #projects:has(#f-android:checked) label[for="f-android"],
+        #projects:has(#f-vision:checked) label[for="f-vision"] {
+            background: var(--board);
+            color: var(--on-board);
+            border-color: var(--board);
+        }
+
+        #projects:has(#f-all:focus-visible) label[for="f-all"],
+        #projects:has(#f-web:focus-visible) label[for="f-web"],
+        #projects:has(#f-android:focus-visible) label[for="f-android"],
+        #projects:has(#f-vision:focus-visible) label[for="f-vision"] {
+            outline: 3px solid var(--signal);
+            outline-offset: 3px;
+        }
+
+        #projects:has(#f-web:checked) .project:not(.cat-web),
+        #projects:has(#f-android:checked) .project:not(.cat-android),
+        #projects:has(#f-vision:checked) .project:not(.cat-vision) {
+            display: none;
+        }
+
+        .project-list {
+            container-type: inline-size;
+        }
+
+        .project {
+            display: grid;
+            grid-template-columns: 220px 1fr;
+            border: 2px solid var(--frame);
+            border-radius: 6px;
+            overflow: hidden;
+            background: var(--paper);
+            margin-bottom: 28px;
+        }
+
+        .project-tag {
+            background: var(--board);
+            color: var(--on-board);
+            padding: 28px 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 24px;
+        }
+
+        .project-tag .plat-no {
+            font-family: var(--display);
+            font-size: 88px;
+            font-weight: 700;
+            line-height: .9;
+            color: var(--signal);
+        }
+
+        .project-tag .plat-name {
+            font-size: 14px;
+            color: var(--on-board-soft);
+        }
+
+        .project-tag .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .project-body {
+            padding: 30px 34px;
+        }
+
+        .project-body h3 {
+            font-size: 36px;
+            margin-bottom: 4px;
+        }
+
+        .project-body .sub {
+            color: var(--accent-text);
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .points {
+            margin-bottom: 20px;
+        }
+
+        .points li,
+        .stop ul li {
+            position: relative;
+            padding-left: 20px;
+            margin-bottom: 8px;
+            color: var(--muted);
+            font-size: 16px;
+        }
+
+        .points li::before,
+        .stop ul li::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: .7em;
+            width: 8px;
+            height: 8px;
+            background: var(--signal);
+        }
+
+        .project-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 22px;
+        }
+
+        .project-links .btn {
+            padding: 9px 18px;
+            font-size: 14px;
+        }
+
+        /* Layout switches on the list's own width, not the screen's */
+        @container (max-width: 700px) {
+            .project {
+                grid-template-columns: 1fr;
+            }
+
+            .project-tag {
+                flex-direction: row;
+                align-items: center;
+                padding: 18px 22px;
+            }
+
+            .project-tag .plat-no {
+                font-size: 56px;
+            }
+
+            .project-body {
+                padding: 24px 22px;
+            }
+        }
+
+        /* Timeline */
+        .timeline {
+            border-left: 3px solid var(--board-2);
+            margin-left: 8px;
+        }
+
+        .stop {
+            position: relative;
+            padding: 0 0 44px 36px;
+        }
+
+        .stop:last-child {
+            padding-bottom: 0;
+        }
+
+        .stop::before {
+            content: "";
+            position: absolute;
+            left: -12px;
+            top: 6px;
+            width: 21px;
+            height: 21px;
+            background: var(--signal);
+            border: 4px solid var(--board-2);
+            border-radius: 50%;
+        }
+
+        .when {
+            display: inline-block;
+            background: var(--board);
+            color: var(--on-board);
+            padding: 3px 12px;
+            border-radius: 3px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .stop h3 {
+            font-size: 30px;
+            margin-bottom: 2px;
+        }
+
+        .stop .org {
+            color: var(--accent-text);
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .stop ul li {
+            max-width: 70ch;
+            margin-bottom: 6px;
+        }
+
+        .edu-note {
+            color: var(--muted);
+            font-size: 15px;
+        }
+
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 64px;
+        }
+
+        .two-col .section-title {
+            font-size: clamp(34px, 4vw, 46px);
+        }
+
+        /* Contact */
+        .contact {
+            background: var(--board);
+            color: var(--on-board);
+        }
+
+        .contact-lead {
+            max-width: 52ch;
+            color: var(--on-board-soft);
+            margin-bottom: 36px;
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+        }
+
+        .contact-card {
+            display: block;
+            text-decoration: none;
+            border: 1.5px solid var(--board-2);
+            background: rgba(255, 255, 255, .05);
+            border-radius: 6px;
+            padding: 22px 24px;
+            transition: border-color .2s, background .2s, transform .2s;
+        }
+
+        .contact-card:hover {
+            border-color: var(--signal);
+            background: rgba(255, 255, 255, .1);
+            transform: translateY(-3px);
+        }
+
+        .contact-card h3 {
+            font-size: 22px;
+            color: var(--signal);
+            margin-bottom: 4px;
+        }
+
+        .contact-card p {
+            font-size: 16px;
+            overflow-wrap: anywhere;
+        }
+
+        .footer {
+            background: var(--board);
+            color: var(--on-board-soft);
+            border-top: 1px solid var(--board-2);
+            text-align: center;
+            padding: 22px 0;
+            font-size: 14px;
+        }
+
+        /* Back to top: appears once the page has scrolled */
+        .to-top {
+            position: fixed;
+            right: 22px;
+            bottom: 22px;
+            z-index: 250;
+            width: 48px;
+            height: 48px;
+            display: grid;
+            place-items: center;
+            background: var(--signal);
+            color: var(--signal-ink);
+            border-radius: 50%;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 13px;
+            box-shadow: 0 8px 20px -6px rgba(0, 0, 0, .45);
+        }
+
+        @supports (animation-timeline: scroll()) {
+            .to-top {
+                animation: showTop linear both;
+                animation-timeline: scroll(root);
+                animation-range: 360px 560px;
+            }
+        }
+
+        @keyframes showTop {
+            from {
+                opacity: 0;
+                visibility: hidden;
+            }
+
+            to {
+                opacity: 1;
+                visibility: visible;
+            }
+        }
+
+        /* =====================================================
+       ANIMATION
+       ===================================================== */
+
+        /* Page load: hero content arrives in sequence */
+        .hero h1,
+        .hero .role,
+        .hero p.lead,
+        .hero-actions {
+            animation: heroIn .8s cubic-bezier(.2, .7, .2, 1) both;
+        }
+
+        .hero h1 {
+            animation-delay: .05s;
+        }
+
+        .hero .role {
+            animation-name: heroWipe;
+            animation-delay: .35s;
+            animation-duration: .9s;
+        }
+
+        .hero p.lead {
+            animation-delay: .6s;
+        }
+
+        .hero-actions {
+            animation-delay: .8s;
+        }
+
+        .board-frame {
+            animation: spin 9s linear infinite, photoIn .9s cubic-bezier(.2, .7, .2, 1) .2s both;
+        }
+
+        @keyframes heroIn {
+            from {
+                opacity: 0;
+                translate: 0 28px;
+            }
+
+            to {
+                opacity: 1;
+                translate: 0 0;
+            }
+        }
+
+        @keyframes heroWipe {
+            from {
+                clip-path: inset(0 100% 0 0);
+                opacity: 0;
+            }
+
+            to {
+                clip-path: inset(0 0 0 0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes photoIn {
+            from {
+                opacity: 0;
+                scale: .92;
+            }
+
+            to {
+                opacity: 1;
+                scale: 1;
+            }
+        }
+
+        /* Scroll-driven: headings wipe in, cards and rows rise, timeline dots pop */
+        @supports (animation-timeline: view()) {
+            .section-title {
+                animation: wipe linear both;
+                animation-timeline: view();
+                animation-range: entry 0% entry 70%;
+            }
+
+            .skill-group,
+            .contact-card,
+            .board-row {
+                animation: revealUp linear both;
+                animation-timeline: view();
+                animation-range: entry 4% cover 26%;
+            }
+
+            .skill-group:nth-child(3n + 2) {
+                animation-range: entry 10% cover 30%;
+            }
+
+            .skill-group:nth-child(3n) {
+                animation-range: entry 16% cover 34%;
+            }
+
+            .stop::before {
+                animation: pop linear both;
+                animation-timeline: view();
+                animation-range: entry 0% entry 90%;
+            }
+        }
+
+        @keyframes wipe {
+            from {
+                clip-path: inset(0 100% 0 0);
+            }
+
+            to {
+                clip-path: inset(0 0 0 0);
+            }
+        }
+
+        @keyframes pop {
+            from {
+                scale: 0;
+            }
+
+            to {
+                scale: 1;
+            }
+        }
+
+        /* Hover: responses to the visitor's action */
+        .btn-primary {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background: linear-gradient(105deg, transparent 30%, rgba(255, 255, 255, .6) 50%, transparent 70%);
+            translate: -120% 0;
+            transition: translate .6s ease;
+        }
+
+        .btn-primary:hover::after {
+            translate: 120% 0;
+        }
+
+        .chips li {
+            transition: transform .2s, background .2s, border-color .2s, color .2s;
+        }
+
+        .chips li:hover {
+            transform: translateY(-3px);
+            background: var(--signal);
+            border-color: var(--signal);
+            color: var(--signal-ink);
+        }
+
+        .project {
+            transition: transform .25s ease, box-shadow .25s ease;
+        }
+
+        .project:hover {
+            transform: translate(-4px, -4px);
+            box-shadow: 8px 8px 0 var(--signal);
+        }
+
+        .project:hover .plat-no {
+            animation: bump .5s ease;
+        }
+
+        @keyframes bump {
+            40% {
+                translate: 0 -8px;
+            }
+        }
+
+        .board-row {
+            transition: background .2s;
+        }
+
+        .board-row:hover {
+            background: var(--board-2);
+        }
+
+        .brand-mark {
+            transition: transform .35s ease;
+        }
+
+        .brand:hover .brand-mark {
+            transform: rotate(-8deg) scale(1.08);
+        }
+
+        /* =====================================================
+       RESPONSIVE
+       ===================================================== */
+        @media (max-width: 920px) {
+
+            .hero .wrap,
+            .about-grid,
+            .two-col {
+                grid-template-columns: 1fr;
+                gap: 44px;
+            }
+
+            .skills-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 800px) {
+            .wrap {
+                width: min(var(--wrap), 100% - 32px);
+            }
+
+            .burger {
+                display: block;
+            }
+
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 68px;
+                left: 0;
+                right: 0;
+                flex-direction: column;
+                gap: 0;
+                background: var(--paper);
+                border-bottom: 1px solid var(--line);
+            }
+
+            .nav-links a {
+                padding: 16px 4px;
+                border-bottom: 1px solid var(--line);
+            }
+
+            .nav:has(#menu-toggle:checked) .nav-links {
+                display: flex;
+            }
+
+            section {
+                padding: 64px 0;
+            }
+
+            .hero {
+                padding: 48px 0 64px;
+            }
+
+            .contact-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .board-cols {
+                display: none;
+            }
+
+            .board-row {
+                grid-template-columns: 40px 1fr auto;
+                padding: 14px 18px;
+            }
+
+            .board-row .stack {
+                display: none;
+            }
+
+        }
+
+        @media (max-width: 520px) {
+            .skills-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .brand-name {
+                display: none;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            html {
+                scroll-behavior: auto;
+            }
+
+            *,
+            *::before,
+            *::after {
+                animation: none !important;
+                transition: none !important;
+            }
+        }
+
+        /* =====================================================
+       PRINT: a clean, ink-friendly version
+       ===================================================== */
+        @media print {
+
+            *,
+            *::before,
+            *::after {
+                animation: none !important;
+            }
+
+            .nav,
+            .progress,
+            .to-top,
+            .filters,
+            .hero-actions,
+            .contact-lead {
+                display: none !important;
+            }
+
+            body {
+                background: #fff;
+                color: #000;
+                font-size: 12pt;
+            }
+
+            section {
+                padding: 20pt 0;
+                background: #fff !important;
+                color: #000 !important;
+            }
+
+            .contact,
+            .footer,
+            .board,
+            .project-tag {
+                background: #fff !important;
+                color: #000 !important;
+            }
+
+            .board-frame {
+                background: none;
+                box-shadow: none;
+                padding: 0;
+                animation: none;
+            }
+
+            .project {
+                break-inside: avoid;
+                border-color: #000;
+            }
+
+            .project-tag .plat-no,
+            .contact-card h3 {
+                color: #000;
+            }
+
+            .contact-card {
+                border-color: #000;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <a class="skip" href="#about">Skip to content</a>
+
+    <div class="progress" aria-hidden="true">
+        <div class="progress-fill"></div>
+    </div>
+
+    <!-- ============ NAV ============ -->
+    <header class="nav" id="home">
+        <div class="wrap">
+            <input type="checkbox" id="menu-toggle" aria-label="Toggle menu">
+
+            <a class="brand" href="#home" aria-label="Sanjana Banakar, home">
+                <span class="brand-mark">S</span>
+                <span class="brand-name">Sanjana Banakar</span>
+            </a>
+
+            <nav class="nav-links" aria-label="Main">
+                <a href="#about">About</a>
+                <a href="#skills">Skills</a>
+                <a href="#projects">Projects</a>
+                <a href="#experience">Experience</a>
+                <a href="#contact">Contact</a>
+            </nav>
+
+            <div class="nav-tools">
+                <label for="menu-toggle" class="burger">Menu</label>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- ============ HERO ============ -->
+        <section class="hero" aria-labelledby="hero-title">
+            <div class="wrap">
+                <div>
+                    <h1 id="hero-title">Sanjana Banakar</h1>
+                    <p class="role">Full-stack and Android developer</p>
+                    <p class="lead">
+                        I build web platforms, Android apps and computer-vision tools that people can
+                        actually use. My latest work includes a live learning platform and a Kannada-first
+                        app that helps rural passengers find their train.
+                    </p>
+                    <div class="hero-actions">
+                        <a class="btn btn-primary" href="#projects">See my projects</a>
+                        <a class="btn btn-ghost" href="Sanjana_Banakar_Fullstack_Developer.pdf" download>Download
+                            resume</a>
+                    </div>
+                </div>
+
+                <div class="board-frame hero-photo">
+                    <!-- Put your photo at images/sanjana.jpg (portrait, about 800 x 1000 px) -->
+                    <div class="portrait" role="img" aria-label="Photo of Sanjana Banakar">
+                        <div class="photo" style="background-image: url('PHOTO01.jpeg');"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============ ABOUT ============ -->
+        <section class="alt" id="about" aria-labelledby="about-title">
+            <div class="wrap">
+                <h2 class="section-title" id="about-title">About me</h2>
+
+                <div class="about-grid">
+                    <div class="reveal">
+                        <p>
+                            I'm an <strong>Information Science engineering graduate</strong> with hands-on
+                            experience in Python, JavaScript, API integration and Git/GitHub. I like turning a
+                            clear problem into a working product, from the first interface sketch to a deployed app.
+                        </p>
+                        <p>
+                            I built and deployed <strong>LearnersKart</strong>, a learning and professional
+                            training platform. I've also made computer-vision applications in Python and
+                            Android apps in Kotlin with Jetpack Compose.
+                        </p>
+                        <p>
+                            Whatever I'm building, I focus on three things: a clean, responsive interface,
+                            workflows that make sense, and code I can debug and improve with a team.
+                        </p>
+                    </div>
+
+                    <ul class="facts reveal" aria-label="Quick facts">
+                        <li><span>Degree</span><span>B.E. Information Science</span></li>
+                        <li><span>Graduating</span><span>2026</span></li>
+                        <li><span>Focus</span><span>Web, Android, CV</span></li>
+                        <li><span>Languages</span><span>English, Kannada</span></li>
+                        <li><span>Based in</span><span>Bengaluru, India</span></li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============ SKILLS ============ -->
+        <section id="skills" aria-labelledby="skills-title">
+            <div class="wrap">
+                <h2 class="section-title" id="skills-title">Skills</h2>
+
+                <div class="skills-grid">
+                    <div class="skill-group">
+                        <h3>Languages</h3>
+                        <ul class="chips">
+                            <li>Python</li>
+                            <li>JavaScript</li>
+                            <li>C</li>
+                            <li>Kotlin</li>
+                        </ul>
+                    </div>
+                    <div class="skill-group">
+                        <h3>Web</h3>
+                        <ul class="chips">
+                            <li>React.js</li>
+                            <li>HTML</li>
+                            <li>CSS</li>
+                            <li>Responsive UI</li>
+                        </ul>
+                    </div>
+                    <div class="skill-group">
+                        <h3>Android</h3>
+                        <ul class="chips">
+                            <li>Kotlin</li>
+                            <li>Jetpack Compose</li>
+                            <li>Offline-first apps</li>
+                            <li>Text-to-Speech</li>
+                        </ul>
+                    </div>
+                    <div class="skill-group">
+                        <h3>Backend and data</h3>
+                        <ul class="chips">
+                            <li>REST API concepts</li>
+                            <li>API integration</li>
+                            <li>Python backend basics</li>
+                            <li>CRUD operations</li>
+                            <li>JSON</li>
+                        </ul>
+                    </div>
+                    <div class="skill-group">
+                        <h3>Computer vision</h3>
+                        <ul class="chips">
+                            <li>OpenCV</li>
+                            <li>MediaPipe</li>
+                            <li>Hand tracking</li>
+                        </ul>
+                    </div>
+                    <div class="skill-group">
+                        <h3>Tools</h3>
+                        <ul class="chips">
+                            <li>Git</li>
+                            <li>GitHub</li>
+                            <li>VS Code</li>
+                            <li>Debugging</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============ PROJECTS ============ -->
+        <section class="alt" id="projects" aria-labelledby="projects-title">
+            <div class="wrap">
+                <h2 class="section-title" id="projects-title">Projects</h2>
+
+                <aside class="board reveal" aria-label="Projects overview">
+                    <div class="board-head">
+                        <span>Projects departing</span>
+                        <small>Now showing</small>
+                    </div>
+                    <div class="board-cols" aria-hidden="true">
+                        <span>Plat.</span><span>Project</span><span>Built with</span><span>Status</span>
+                    </div>
+                    <div class="board-row">
+                        <span class="plat">1</span>
+                        <span>LearnersKart</span>
+                        <span class="stack">JavaScript, APIs</span>
+                        <span class="state"><span class="dot live"></span>Live</span>
+                    </div>
+                    <div class="board-row">
+                        <span class="plat">2</span>
+                        <span>Namma-Platform</span>
+                        <span class="stack">Kotlin, Compose</span>
+                        <span class="state"><span class="dot done"></span>Built</span>
+                    </div>
+                    <div class="board-row">
+                        <span class="plat">3</span>
+                        <span>Gesture Volume</span>
+                        <span class="stack">Python, OpenCV</span>
+                        <span class="state"><span class="dot done"></span>Built</span>
+                    </div>
+                    <p class="board-foot">Next stop: your project.</p>
+                </aside>
+
+                <!-- Filter: radios drive :has() selectors, no JavaScript -->
+                <input class="vh" type="radio" name="filter" id="f-all" checked>
+                <input class="vh" type="radio" name="filter" id="f-web">
+                <input class="vh" type="radio" name="filter" id="f-android">
+                <input class="vh" type="radio" name="filter" id="f-vision">
+                <div class="filters" role="group" aria-label="Filter projects">
+                    <label class="pill" for="f-all">All</label>
+                    <label class="pill" for="f-web">Web</label>
+                    <label class="pill" for="f-android">Android</label>
+                    <label class="pill" for="f-vision">Computer vision</label>
+                </div>
+
+                <div class="project-list">
+                    <article class="project cat-web reveal">
+                        <div class="project-tag">
+                            <div>
+                                <div class="plat-no" aria-hidden="true">1</div>
+                                <div class="plat-name">Web platform</div>
+                            </div>
+                            <span class="status"><span class="dot live"></span>Deployed</span>
+                        </div>
+                        <div class="project-body">
+                            <h3>LearnersKart</h3>
+                            <p class="sub">Learning and professional training platform</p>
+                            <ul class="points">
+                                <li>Built and deployed a real-world platform with course discovery and training-content
+                                    workflows.</li>
+                                <li>Designed responsive interfaces with clear navigation and a focus on everyday
+                                    usability.</li>
+                                <li>Worked across the frontend-backend boundary: API integration, data handling and
+                                    debugging.</li>
+                                <li>Kept improving the live app through iterative development with Git and GitHub.</li>
+                            </ul>
+                            <ul class="chips">
+                                <li>JavaScript</li>
+                                <li>API integration</li>
+                                <li>Git/GitHub</li>
+                                <li>Full-stack</li>
+                            </ul>
+                            <div class="project-links">
+                                <a class="btn btn-primary" href="https://www.learnerskart.com" target="_blank"
+                                    rel="noopener">Visit live
+                                    site</a>
+                                <a class="btn btn-ghost" href="https://github.com/sanjanasb04/LearnersKart"
+                                    target="_blank" rel="noopener">View code</a>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="project cat-android reveal">
+                        <div class="project-tag">
+                            <div>
+                                <div class="plat-no" aria-hidden="true">2</div>
+                                <div class="plat-name">Android app</div>
+                            </div>
+                            <span class="status"><span class="dot done"></span>Feb to May 2026</span>
+                        </div>
+                        <div class="project-body">
+                            <h3>Namma-Platform</h3>
+                            <p class="sub">Local station guide app for rural passengers</p>
+                            <ul class="points">
+                                <li>Built a Kannada-first Android app that helps rural passengers move around railway
+                                    stations with
+                                    confidence.</li>
+                                <li>Designed an offline-first system: local JSON data shows platform numbers and train
+                                    sequences without
+                                    internet.</li>
+                                <li>Added Kannada Text-to-Speech for clear train announcements, supporting low-literacy
+                                    users.</li>
+                            </ul>
+                            <ul class="chips">
+                                <li>Kotlin</li>
+                                <li>Jetpack Compose</li>
+                                <li>JSON</li>
+                                <li>Text-to-Speech</li>
+                            </ul>
+                            <div class="project-links">
+                                <a class="btn btn-ghost" href="https://github.com/sanjanasb04" target="_blank"
+                                    rel="noopener">See on
+                                    GitHub</a>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="project cat-vision reveal">
+                        <div class="project-tag">
+                            <div>
+                                <div class="plat-no" aria-hidden="true">3</div>
+                                <div class="plat-name">Computer vision</div>
+                            </div>
+                            <span class="status"><span class="dot done"></span>Aug to Nov 2025</span>
+                        </div>
+                        <div class="project-body">
+                            <h3>Volume control using hand gestures</h3>
+                            <p class="sub">Touchless device volume control</p>
+                            <ul class="points">
+                                <li>Built a real-time system that changes device volume from hand movements seen by the
+                                    camera.</li>
+                                <li>Used MediaPipe hand tracking to detect finger positions precisely.</li>
+                                <li>Improved recognition accuracy with OpenCV image processing.</li>
+                                <li>Reduced reliance on physical input by making interaction touchless.</li>
+                            </ul>
+                            <ul class="chips">
+                                <li>Python</li>
+                                <li>OpenCV</li>
+                                <li>MediaPipe</li>
+                            </ul>
+                            <div class="project-links">
+                                <a class="btn btn-ghost" href="https://github.com/sanjanasb04" target="_blank"
+                                    rel="noopener">See on
+                                    GitHub</a>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============ EXPERIENCE + EDUCATION ============ -->
+        <section id="experience" aria-labelledby="exp-title">
+            <div class="wrap two-col">
+                <div>
+                    <h2 class="section-title" id="exp-title">Experience</h2>
+                    <div class="timeline">
+                        <div class="stop reveal">
+                            <span class="when">Feb 2026 to May 2026</span>
+                            <h3>Android Development Intern</h3>
+                            <p class="org">Mind Matrix</p>
+                            <ul>
+                                <li>Developed Android apps with Kotlin and Jetpack Compose.</li>
+                                <li>Designed intuitive, responsive UI components for a better user experience.</li>
+                                <li>Collaborated on real-time development tasks in a team.</li>
+                                <li>Gained practical exposure to app architecture, debugging and performance
+                                    optimization.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h2 class="section-title" id="edu-title">Education</h2>
+                    <div class="timeline">
+                        <div class="stop reveal">
+                            <span class="when">2022 to 2026</span>
+                            <h3>B.E. Information Science</h3>
+                            <p class="org">Sri Taralabalu Jagadguru Institute of Technology, Ranebennur</p>
+                        </div>
+                        <div class="stop reveal">
+                            <span class="when">2020 to 2022</span>
+                            <h3>Pre-University (PCMB)</h3>
+                            <p class="org">KLE's G H College, Haveri</p>
+                            <p class="edu-note">78.83%</p>
+                        </div>
+                        <div class="stop reveal">
+                            <span class="when">2019 to 2020</span>
+                            <h3>SSLC</h3>
+                            <p class="org">J G S S C M High School</p>
+                            <p class="edu-note">82.72%</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============ CONTACT ============ -->
+        <section class="contact" id="contact" aria-labelledby="contact-title">
+            <div class="wrap">
+                <h2 class="section-title" id="contact-title">Contact</h2>
+                <p class="contact-lead">
+                    I'm open to full-stack, frontend and Android roles. Send me a message and I'll reply as soon as I
+                    can.
+                </p>
+
+                <div class="contact-grid">
+                    <a class="contact-card" href="mailto:sanjubanakarmlr45@gmail.com">
+                        <h3>Email</h3>
+                        <p>sanjubanakarmlr45@gmail.com</p>
+                    </a>
+                    <a class="contact-card" href="tel:+919620163271">
+                        <h3>Phone</h3>
+                        <p>+91 96201 63271</p>
+                    </a>
+                    <a class="contact-card" href="https://www.linkedin.com/in/sanjana-s-b-67a05b320" target="_blank"
+                        rel="noopener">
+                        <h3>LinkedIn</h3>
+                        <p>sanjana-s-b-67a05b320</p>
+                    </a>
+                    <a class="contact-card" href="https://github.com/sanjanasb04" target="_blank" rel="noopener">
+                        <h3>GitHub</h3>
+                        <p>github.com/sanjanasb04</p>
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2026 Sanjana Banakar. Bengaluru, India.</p>
+    </footer>
+
+    <a class="to-top" href="#home" aria-label="Back to top">Top</a>
+</body>
+
+</html>
